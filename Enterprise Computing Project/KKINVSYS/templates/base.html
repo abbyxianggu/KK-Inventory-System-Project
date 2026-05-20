@@ -1,15 +1,33 @@
 <!DOCTYPE html>
 <html>
-<title> {%block title%} BASE {%endblock%}</title>
 <head>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+  <title>{% block title %}BASE{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 </head>
-    {% block main %}
-    <body>
-    <div class= "title">
-        <p>KRISPY KREME Inventory System</p>
+<body>
+  <nav class="navbar">
+    <div class="nav-top">
+      <div class="nav-brand">KRISPY KREME - INVENTORY DASHBOARD</div>
+      <div class="nav-top-right">
+        <select class="store-select">
+          <option>Sydney CBD</option>
+          <option>Parramatta</option>
+          <option>Chatswood</option>
+        </select>
+        <a href="/alerts" class="restock-btn">Restock request ↗</a>
+      </div>
     </div>
+    <div class="nav-tabs">
+      <a href="/" class="nav-tab" id="overview_tab">OVERVIEW</a>
+      <a href="/inventory" class="nav-tab" id="inv_tab">INVENTORY</a>
+      <a href="/sales" class="nav-tab" id="sales_tab">SALES</a>
+      <a href="/alerts" class="nav-tab" id="alerts_tab">ALERTS</a>
+      <a href="/reports" class="nav-tab" id="reports_tab">REPORTS</a>
+    </div>
+  </nav>
+
+  {% block main %}{% endblock %}
+
 </body>
-    {% endblock %}
-    
+</html>

@@ -1,7 +1,15 @@
 
 {%extends 'base.html'%}
 
+{% block title %} index {% endblock %}
+
 {%block main%}
+<style>
+  #overview_tab{
+    color:rgb(255, 255, 255);
+    border-bottom: 2px solid white;
+  }
+  </style>
 <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
