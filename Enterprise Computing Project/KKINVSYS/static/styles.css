@@ -1,0 +1,95 @@
+:root {
+    /* Colors */
+    --color-background:#111110;
+    --color-container:rgb(32, 32, 30);;
+    --color-outline: rgb(50, 49, 49);
+    --color-info: #090907;
+    --color-unhighlight: #8B8980;
+    --color-highlight: white;
+    
+body {
+    background-color: var(--color-background);
+    }
+    /* INDEX */
+.index-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+}
+
+
+.index_box1 {
+    background-color: var(--color-container);
+    width: 500px;
+    height:700px;
+    border: 2px;
+    border-style: solid;
+    border-color: var(--color-outline);
+    border-radius: 20px 20px 20px 20px;
+    padding: 20px; 
+    margin: 5px;
+    position: absolute;
+    vertical-align: top;
+    top: 400px;
+    left: 500px;
+  
+    
+ }
+
+ .index_box2 {
+    background-color: var(--color-container);
+    width: 500px;
+    height: 250px;
+    border: 2px;
+    border-style: solid;
+    border-color: var(--color-outline);
+    border-radius: 20px 20px 20px 20px;
+    padding: 20px; 
+    margin: 5px;
+    position: absolute;
+    vertical-align: top;
+    top: 400px;
+    right: 590px;
+  
+ }
+
+ .index_box3 {
+    background-color: var(--color-container);
+    width: 500px;
+    height: 390px;
+    border: 2px;
+    border-style: solid;
+    border-color: var(--color-outline);
+    border-radius: 20px 20px 20px 20px;
+    padding: 20px; 
+    margin: 5px;
+    position: absolute;
+    vertical-align: top;
+    top: 710px;
+    right: 590px;
+
+ }
+
+ .stock_text {
+    position: absolute;
+    font-weight: bold;
+    color:#8B8980
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}

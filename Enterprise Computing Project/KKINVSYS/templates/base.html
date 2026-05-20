@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<title> {%block title%} BASE {%endblock%}</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+   
+    {% block main %}
+    <body style="background-color: #090907 ;">
+    </style>
+
+        <div className = "fixed" style="color: #FF5733;"> Krispy Kreme - Inventory Dashboard 
+            </div>
+
+    </body>
+    {% endblock %}
+    <script>
