@@ -1,15 +1,22 @@
 
 {%extends 'base.html'%}
-<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
 {%block main%}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 <title> Main Page </title>
 <div class="index-wrapper">
     <div class="index_box1">
-      <p class="stock_text">Stock Level By Type</p>
+      <p class="stock_text">  STOCK LEVEL BY TYPE</p>
     </div>
-    <div class="index_box2"></div>
-      <p class="stock_text">Commit test</p>
-    <div class="index_box3"></div>
+    <div class="index_box2">
+      <p class="hourly_text">HOURLY SALES TODAY</p>
+    </div>
+    <div class="index_box3">
+      <p class="active_text"> ACTIVE ALERTS</p>
+    </div>
   </div>
 
 {%endblock%}

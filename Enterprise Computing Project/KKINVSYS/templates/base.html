@@ -1,17 +1,15 @@
 <!DOCTYPE html>
 <html>
 <title> {%block title%} BASE {%endblock%}</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<head>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-   
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+</head>
     {% block main %}
-    <body style="background-color: #090907 ;">
-    </style>
-
-        <div className = "fixed" style="color: #FF5733;"> Krispy Kreme - Inventory Dashboard 
-            </div>
-
-    </body>
+    <body>
+    <div class= "title">
+        <p>KRISPY KREME Inventory System</p>
+    </div>
+</body>
     {% endblock %}
-    <script>
+    
