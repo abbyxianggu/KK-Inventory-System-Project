@@ -15,6 +15,30 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 <title> Main Page </title>
+<!-- stat boxes sit in normal flow, above everything -->
+<div class="stats-row">
+  <div class="stat-box">
+    <p class="stat-label">Total stock</p>
+    <p class="stat-value">1,284</p>
+    <p class="stat-sub">units across all types</p>
+  </div>
+  <div class="stat-box">
+    <p class="stat-label">Sold today</p>
+    <p class="stat-value">342</p>
+    <p class="stat-sub">+18% vs yesterday</p>
+  </div>
+  <div class="stat-box">
+    <p class="stat-label">Low stock alerts</p>
+    <p class="stat-value red">3</p>
+    <p class="stat-sub">items need restocking</p>
+  </div>
+  <div class="stat-box">
+    <p class="stat-label">Revenue today</p>
+    <p class="stat-value">$1,710</p>
+    <p class="stat-sub">target: $2,000</p>
+  </div>
+</div>
+
 <div class="index-wrapper">
     <div class="index_box1">
       <p class="stock_text">  STOCK LEVEL BY TYPE</p>
@@ -26,5 +50,7 @@
       <p class="active_text"> ACTIVE ALERTS</p>
     </div>
   </div>
+
+
 
 {%endblock%}
