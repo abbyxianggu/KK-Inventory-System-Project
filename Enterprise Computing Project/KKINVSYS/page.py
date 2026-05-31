@@ -1,9 +1,11 @@
 from flask import Blueprint, render_template
+from datetime import date
 page = Blueprint("page", __name__)
 
 @page.route('/')
-def home():
-    return render_template ('index.html')
+def index():
+    return render_template('index.html')
+
 
 @page.route('/inventory')
 def inv():
