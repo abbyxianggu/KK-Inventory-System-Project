@@ -1,22 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Inventory{% endblock %}
 
-{%extends 'base.html'%}
+{% block main %}
 
-{% block title %} inventory {% endblock %}
-
-{%block main%}
-<style>
-  #inv_tab{
-    color:rgb(255, 255, 255);
-    border-bottom: 2px solid white;
-  }
-  </style>
-<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-<title> Inventory </title>
-<div class="big_box">
-  <div class="inventory_box">
+<div class="stats-row">
+  <div class="stat-box">
+    <p class="stat-label">Total stock</p>
+    <p class="stat-value">{{ "{:,}".format(total_stock|int) }}</p>
+    <p class="stat-sub">units across 6 types</p>
+    <style>{padding-top: 10px;}</style>
+  </div>
+  <div class="stat-box">
+    <p class="stat-label">Items below threshold</p>
+    <p class="stat-value red">{{ low_count }}</p>
+    <p class="stat-sub">need attention</p>
+  </div>
 </div>
 
-{%endblock%}
+<div class="inv-wrapper">
+
+  <div class="inv-card">
+    <p class="inv-title">DONUT STOCK</p>
+    <table class="inv-table">
+      <thead>
+        <tr>
+          <th>Donut</th>
+          <th>Stock</th>
+          <th>Max</th>
+          <th>Fill %</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for d in donuts %}
+          {% set pct = (d.stock / d.max_stock * 100)|int %}
+          {% if pct < 10 %}{% set status = "Low" %}
+          {% elif pct < 50 %}{% set status = "Med" %}
+          {% else %}{% set status = "OK" %}{% endif %}
+          <tr>
+            <td>{{ d.name }}</td>
+            <td>{{ d.stock }}</td>
+            <td>{{ d.max_stock }}</td>
+            <td>
+              <div class="bar-bg">
+                <div class="bar-fill {{ status|lower }}" style="width: {{ pct }}%"></div>
+              </div>
+            </td>
+            <td><span class="badge badge-{{ status|lower }}">{{ status }}</span></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="inv-card">
+    <p class="inv-title">INGREDIENTS STOCK</p>
+    {% for i in ingredients %}
+      {% set pct = (i.quantity / i.max_quantity * 100)|int %}
+      {% if pct < 10 %}{% set status = "Low" %}
+      {% elif pct < 50 %}{% set status = "Med" %}
+      {% else %}{% set status = "OK" %}{% endif %}
+      <div class="ing-row">
+        <span class="ing-name">{{ i.name }} ({{ i.unit }})</span>
+        <div class="bar-bg">
+          <div class="bar-fill {{ status|lower }}" style="width: {{ pct }}%"></div>
+        </div>
+        <span class="ing-qty">{{ i.quantity }} / {{ i.max_quantity }}{{ i.unit }}</span>
+        <span class="badge badge-{{ status|lower }}">{{ status }}</span>
+      </div>
+    {% endfor %}
+  </div>
+
+</div>
+
+{% endblock %}

@@ -45,12 +45,16 @@ def inventory():
     store = request.args.get('store', 'Sydney CBD')
     donuts = Donut.query.filter_by(store=store).all()
     ingredients = Ingredient.query.filter_by(store=store).all()
-    
+    total_stock = sum(d.stock for d in donuts)
+    low_count = len([d for d in donuts if d.stock / d.max_stock < 0.10])
+
     return render_template('inventory.html',
         active='inventory',
         store=store,
         donuts=donuts,
-        ingredients=ingredients
+        ingredients=ingredients,
+        total_stock=total_stock,
+        low_count=low_count
     )
     
 @page.route('/sales')

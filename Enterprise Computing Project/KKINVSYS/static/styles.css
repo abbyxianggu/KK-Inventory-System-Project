@@ -101,7 +101,8 @@ body {background-color: black;
 .stats-row {
   display: flex;
   gap: 20px;
-  padding: 100px 100px 20px;
+  padding: 20px 20px 20px;
+
   justify-content: center;
 }
 
@@ -163,7 +164,6 @@ body {background-color: black;
     padding-top: 70px;
     
   
-    
  }
 
  .index_box2 {
@@ -329,4 +329,87 @@ body {background-color: black;
 .badge-ok  { background: #a1f077; color: #447456; }
 .badge-med { background: #e4be55; color: #89732a; }
 .badge-low { background: #ea7e7e; color: #742121; }
+}
+
+/* INVENTORY */
+.inv-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 24px;
+}
+
+.inv-card {
+  background-color: var(--color-container);
+  border: 2px solid var(--color-outline);
+  border-radius: 20px;
+  padding: 24px;
+}
+
+.inv-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #8B8980;
+  letter-spacing: 0.08em;
+  margin-bottom: 16px;
+  font-family: "Inter", sans-serif;
+}
+
+.inv-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  font-family: "Inter", sans-serif;
+}
+
+.inv-table th {
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: #8B8980;
+  border-bottom: 1px solid var(--color-outline);
+  font-weight: 500;
+  font-family: "Inter", sans-serif;
+}
+
+.inv-table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--color-outline);
+  color: white;
+}
+
+.inv-table tr:last-child td {
+  border-bottom: none;
+}
+
+.inv-table .bar-bg {
+  width: 150px;
+}
+
+
+/* INGREDIENTS */
+.ing-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-outline);
+}
+
+.ing-row:last-child {
+  border-bottom: none;
+}
+
+.ing-name {
+  font-size: 14px;
+  color: white;
+  min-width: 140px;
+  font-family: "Inter", sans-serif;
+}
+
+.ing-qty {
+  font-size: 13px;
+  color: #8B8980;
+  white-space: nowrap;
+  font-family: "Inter", sans-serif;
 }
