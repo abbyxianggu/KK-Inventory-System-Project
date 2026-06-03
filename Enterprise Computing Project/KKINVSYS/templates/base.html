@@ -10,10 +10,10 @@
     <div class="nav-top">
       <div class="nav-brand">KRISPY KREME - INVENTORY DASHBOARD</div>
       <div class="nav-top-right">
-        <select class="store-select">
-          <option>Sydney CBD</option>
-          <option>Parramatta</option>
-          <option>Chatswood</option>
+        <select class="store-select" onchange="window.location.href='?store=' + this.value">
+          <option value="Sydney CBD" {{ 'selected' if store == 'Sydney CBD' }}>Sydney CBD</option>
+          <option value="Parramatta" {{ 'selected' if store == 'Parramatta' }}>Parramatta</option>
+          <option value="Chatswood" {{ 'selected' if store == 'Chatswood' }}>Chatswood</option>
         </select>
         <a href="/alerts" class="restock-btn">Restock request ↗</a>
       </div>

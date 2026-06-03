@@ -15,7 +15,7 @@ body {background-color: black;
 .navbar {
     background-color: black;
     border-bottom: 2px solid var(--color-outline);
-    padding: 80px 24px 0;
+    padding: 60px 24px 0;
     position: sticky;
     top: 0;
     z-index: 100;
@@ -25,7 +25,7 @@ body {background-color: black;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding:20px;
+    padding:1px;
     margin-bottom: 16px;
   }
   
@@ -101,14 +101,14 @@ body {background-color: black;
 .stats-row {
   display: flex;
   gap: 20px;
-  padding: 100px 100px 100;
+  padding: 100px 100px 20px;
   justify-content: center;
 }
 
 .stat-box {
   background-color: #131312;
   border-radius: 16px;
-  padding: 16px 24px;
+  padding: 1px 24px 1px;
   min-width: 180px;
   height: 120px;
 }
@@ -149,7 +149,7 @@ body {background-color: black;
 .index_box1 {
     background-color: var(--color-container);
     width: 500px;
-    height:700px;
+    height:650px;
     border: 2px;
     border-style: solid;
     border-color: var(--color-outline);
@@ -158,8 +158,10 @@ body {background-color: black;
     margin: 5px;
     position: absolute;
     vertical-align: top;
-    top: 100px;
+    top: 50px;
     left: 330px;
+    padding-top: 70px;
+    
   
     
  }
@@ -176,7 +178,7 @@ body {background-color: black;
     margin: 5px;
     position: absolute;
     vertical-align: top;
-    top: 100px;
+    top: 50px;
     right: 350px;
   
  }
@@ -193,18 +195,19 @@ body {background-color: black;
     margin: 5px;
     position: absolute;
     vertical-align: top;
-    top: 410px;
+    top: 360px;
     right: 350px;
 
  }
 
  .stock_text {
-    position: absolute;
-    font-size: 24px;
-    font-weight: bold;
-    color:#8B8980;
-    font-family: "Inter", sans-serif;
- }
+  position: absolute;
+  top: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  color:#8B8980;
+  font-family: "Inter", sans-serif;
+}
 
  .hourly_text {
     position: absolute;
@@ -249,4 +252,81 @@ body {background-color: black;
   position: absolute;
  
 }
+/* DONUT ROWS */
+.donut-row {
+  margin-top: 30px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-outline);
+}
+
+.donut-row:last-child {
+  border-bottom: none;
+}
+
+.donut-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-outline);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.donut-icon img {
+  width: 80%;
+  height: 80%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.donut-name {
+  flex: 1;
+  font-size: 13px;
+  color: white;
+  min-width: 100px;
+  font-family: "Inter", sans-serif;
+  font-weight: bold;
+}
+
+.bar-bg {
+  flex: 1;
+  height: 6px;
+  background: var(--color-outline);
+  border-radius: 3px;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 3px;
+}
+
+.bar-fill.ok  { background: #a1f077; }
+.bar-fill.med { background: #e4be55; }
+.bar-fill.low { background: #ea7e7e; }
+
+.donut-qty {
+  font-size: 13px;
+  font-weight: 500;
+  color: white;
+  min-width: 30px;
+  text-align: right;
+  font-family: "Inter", sans-serif;
+}
+
+.badge {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-family: "Inter", sans-serif;
+  font-weight: bold;
+}
+
+.badge-ok  { background: #a1f077; color: #447456; }
+.badge-med { background: #e4be55; color: #89732a; }
+.badge-low { background: #ea7e7e; color: #742121; }
 }

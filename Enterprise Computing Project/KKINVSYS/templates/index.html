@@ -19,30 +19,56 @@
 <div class="stats-row">
   <div class="stat-box">
     <p class="stat-label">Total stock</p>
-    <p class="stat-value">{{ total_stock }}</p>
+    <p class="stat-value">{{ "{:,}".format(total_stock) }}</p>
     <p class="stat-sub">units across all types</p>
   </div>
   <div class="stat-box">
     <p class="stat-label">Sold today</p>
-    <p class="stat-value">342</p>
+    <p class="stat-value">{{ sold_today }}</p>
     <p class="stat-sub">+18% vs yesterday</p>
   </div>
   <div class="stat-box">
     <p class="stat-label">Low stock alerts</p>
-    <p class="stat-value red">3</p>
+    <p class="stat-value red">{{ low_alerts }}</p>
     <p class="stat-sub">items need restocking</p>
   </div>
   <div class="stat-box">
     <p class="stat-label">Revenue today</p>
-    <p class="stat-value">$1,710</p>
+    <p class="stat-value">${{ "%.2f"|format(revenue_today) }}</p>
     <p class="stat-sub">target: $2,000</p>
   </div>
 </div>
 
+#Stock level by type chart
+
 <div class="index-wrapper">
     <div class="index_box1">
       <p class="stock_text">  STOCK LEVEL BY TYPE</p>
+        {% for d in donuts %}
+          {% set pct = (d.stock / d.max_stock * 100)|int %}
+          {% if pct < 10 %}
+            {% set status = "LOW" %}
+          {% elif pct < 50 %}
+            {% set status = "MED" %}
+          {% else %}
+            {% set status = "OK" %}
+          {% endif %}
+          <div class="donut-row">
+            <div class="donut-icon">
+              <img src="{{ url_for('static', filename='images/' + d.name.lower().replace(' ', '_') + '.png') }}" 
+                   alt="{{ d.name }}" class="donut-img"> 
+            </div>
+            <span class="donut-name">{{ d.name }}</span>
+            <div class="bar-bg">
+              <div class="bar-fill {{ status|lower }}" style="width: {{ pct }}%"></div>
+            </div>
+            <span class="donut-qty">{{ d.stock }}/{{ d.max_stock }}</span>
+            <span class="badge badge-{{ status|lower }}">{{ status }}</span>
+          </div>
+        {% endfor %}
     </div>
+
+  
     <div class="index_box2">
       <p class="hourly_text">HOURLY SALES TODAY</p>
     </div>
