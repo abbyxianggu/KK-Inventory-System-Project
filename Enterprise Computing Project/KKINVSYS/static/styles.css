@@ -7,7 +7,7 @@
     --color-unhighlight: #8B8980;
     --color-highlight: white;
 
-body {background-color: black;
+body {background-color: rgb(0, 0, 0);
 
 }
   
@@ -109,7 +109,7 @@ body {background-color: black;
 .stat-box {
   background-color: #131312;
   border-radius: 16px;
-  padding: 1px 24px 1px;
+  padding: 1px 24px 10px;
   min-width: 180px;
   height: 120px;
 }
@@ -117,7 +117,7 @@ body {background-color: black;
 .stat-label {
   font-size: 12px;
   color: #a9a79d;
-  margin-bottom: 6px;
+  margin-bottom: -16px;
   font-family: "Inter", sans-serif;
 }
 
