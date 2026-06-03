@@ -24,7 +24,7 @@
   </div>
   <div class="stat-box">
     <p class="stat-label">Sold today</p>
-    <p class="stat-value">{{ sold_today }}</p>
+    <p class="stat-value">{{ "{:,}".format(sold_today) }}</p>
     <p class="stat-sub">+18% vs yesterday</p>
   </div>
   <div class="stat-box">
