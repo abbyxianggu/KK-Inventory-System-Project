@@ -1,82 +1,160 @@
+{% extends 'base.html' %}
+{% block title %}Overview — KK Inventory{% endblock %}
 
-{%extends 'base.html'%}
-
-{% block title %} index {% endblock %}
-
-{%block main%}
+{% block main %}
 <style>
-  #overview_tab{
-    color:rgb(255, 255, 255);
-    border-bottom: 2px solid white;
-  }
-  </style>
-<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-<title> Main Page </title>
-<!-- stat boxes sit in normal flow, above everything -->
-<div class="stats-row">
-  <div class="stat-box">
-    <p class="stat-label">Total stock</p>
-    <p class="stat-value">{{ "{:,}".format(total_stock) }}</p>
-    <p class="stat-sub">units across all types</p>
+#overview_tab {
+  font-weight: 300;
+  color: white;
+  border-bottom: 3px solid white;
+}
+</style>
+<div class="page">
+
+  <!-- STAT CARDS -->
+  <div class="stats-row mb-20">
+    <div class="stat-card">
+      <div class="stat-card-label">Total stock</div>
+      <div class="stat-card-value">{{ "{:,}".format(total_stock) }}</div>
+      <div class="stat-card-sub">units across all types</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Sold today</div>
+      <div class="stat-card-value">{{ "{:,}".format(sold_today) }}</div>
+      <div class="stat-card-sub">units moved</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Low stock alerts</div>
+      <div class="stat-card-value {% if low_alerts > 0 %}red{% endif %}">{{ low_alerts }}</div>
+      <div class="stat-card-sub">items need restocking</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Revenue today</div>
+      <div class="stat-card-value">${{ "{:,.2f}".format(revenue_today) }}</div>
+      <div class="stat-card-sub">target: $5,000</div>
+    </div>
   </div>
-  <div class="stat-box">
-    <p class="stat-label">Sold today</p>
-    <p class="stat-value">{{ "{:,}".format(sold_today) }}</p>
-    <p class="stat-sub">+18% vs yesterday</p>
+
+  <!-- ROW 1: Stock levels + Hourly chart -->
+  <div class="card-grid mb-12">
+
+    <div class="card">
+      <div class="card-title">Stock levels by type</div>
+      {% for d in donuts %}
+        {% set pct = (d.stock / d.max_stock * 100)|int %}
+        {% if pct < 10 %}{% set status = "LOW" %}
+        {% elif pct < 50 %}{% set status = "MED" %}
+        {% else %}{% set status = "OK" %}{% endif %}
+        <div class="donut-row">
+          <div class="donut-img-wrap">
+            <img src="{{ url_for('static', filename='images/' + d.name.lower().replace(' ', '_') + '.png') }}" alt="{{ d.name }}">
+          </div>
+          <span class="donut-name">{{ d.name }}</span>
+          <div class="bar-bg">
+            <div class="bar-fill {{ status|lower }}" style="width:{{ pct }}%"></div>
+          </div>
+          <span class="donut-qty">{{ d.stock }}/{{ d.max_stock }}</span>
+          <span class="badge badge-{{ status|lower }}">{{ status }}</span>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="card-col">
+      <div class="card">
+        <div class="card-title">Hourly sales today</div>
+        <canvas id="hourlyChart" height="110"></canvas>
+      </div>
+      <div class="card">
+        <div class="card-title">Sales by variety today</div>
+        <canvas id="varietyChart" height="160" style="max-height:160px"></canvas>
+      </div>
+    </div>
+
   </div>
-  <div class="stat-box">
-    <p class="stat-label">Low stock alerts</p>
-    <p class="stat-value red">{{ low_alerts }}</p>
-    <p class="stat-sub">items need restocking</p>
+
+  <!-- ROW 2: Active alerts -->
+  <div class="card">
+    <div class="card-title">Active alerts</div>
+    {% set low_donuts = donuts | selectattr('stock') | list %}
+    {% set has_alerts = [] %}
+    {% for d in donuts %}
+      {% set pct = (d.stock / d.max_stock * 100)|int %}
+      {% if pct < 50 %}{% set _ = has_alerts.append(d) %}{% endif %}
+    {% endfor %}
+    {% if has_alerts %}
+      {% for d in donuts %}
+        {% set pct = (d.stock / d.max_stock * 100)|int %}
+        {% if pct < 10 %}
+          <div class="alert-row">
+            <span class="alert-icon critical">⊘</span>
+            <span class="alert-text">{{ d.name }} — critically low ({{ d.stock }} units)</span>
+            <span class="badge badge-low">Critical</span>
+            <a href="/alerts?store={{ store }}&prefill={{ d.id }}" class="btn-sm">Restock</a>
+          </div>
+        {% elif pct < 50 %}
+          <div class="alert-row">
+            <span class="alert-icon warning">△</span>
+            <span class="alert-text">{{ d.name }} — medium warning ({{ d.stock }} units)</span>
+            <span class="badge badge-med">Med</span>
+            <a href="/alerts?store={{ store }}&prefill={{ d.id }}" class="btn-sm">Restock</a>
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      <p style="color:var(--text-3);font-size:13px;padding:8px 0">All stock levels are healthy.</p>
+    {% endif %}
   </div>
-  <div class="stat-box">
-    <p class="stat-label">Revenue today</p>
-    <p class="stat-value">${{ "%.2f"|format(revenue_today) }}</p>
-    <p class="stat-sub">target: $2,000</p>
-  </div>
+
 </div>
 
-<!-- Stock level by type chart -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const hourlyData   = {{ hourly_data | tojson }};
+const hourlyLabels = {{ hourly_labels | tojson }};
+const donutNames   = {{ donuts | map(attribute='name') | list | tojson }};
+const donutStocks  = {{ donuts | map(attribute='stock') | list | tojson }};
 
-<div class="index-wrapper">
-    <div class="index_box1">
-      <p class="stock_text">  STOCK LEVEL BY TYPE</p>
-        {% for d in donuts %}
-          {% set pct = (d.stock / d.max_stock * 100)|int %}
-          {% if pct < 10 %}
-            {% set status = "LOW" %}
-          {% elif pct < 50 %}
-            {% set status = "MED" %}
-          {% else %}
-            {% set status = "OK" %}
-          {% endif %}
-          <div class="donut-row">
-            <div class="donut-icon">
-              <img src="{{ url_for('static', filename='images/' + d.name.lower().replace(' ', '_') + '.png') }}" 
-                   alt="{{ d.name }}" class="donut-img"> 
-            </div>
-            <span class="donut-name">{{ d.name }}</span>
-            <div class="bar-bg">
-              <div class="bar-fill {{ status|lower }}" style="width: {{ pct }}%"></div>
-            </div>
-            <span class="donut-qty">{{ d.stock }}/{{ d.max_stock }}</span>
-            <span class="badge badge-{{ status|lower }}">{{ status }}</span>
-          </div>
-        {% endfor %}
-    </div>
+const chartDefaults = {
+  responsive: true,
+  plugins: { legend: { display: false } },
+  scales: {
+    x: { grid: { display: false }, ticks: { color: '#5a5955', font: { size: 10 }, maxRotation: 0 } },
+    y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#5a5955', font: { size: 10 } } }
+  }
+};
 
-  
-    <div class="index_box2">
-      <p class="hourly_text">HOURLY SALES TODAY</p>
-    </div>
-    <div class="index_box3">
-      <p class="active_text"> ACTIVE ALERTS</p>
-    </div>
-  </div>
+// Hourly chart
+new Chart(document.getElementById('hourlyChart'), {
+  type: 'bar',
+  data: {
+    labels: hourlyLabels,
+    datasets: [{ data: hourlyData,
+      backgroundColor: hourlyData.map(v => v > 0 ? '#f59e0b' : 'rgba(255,255,255,0.04)'),
+      borderRadius: 3
+    }]
+  },
+  options: { ...chartDefaults }
+});
 
-
-
-{%endblock%}
+// Sales by variety doughnut
+new Chart(document.getElementById('varietyChart'), {
+  type: 'doughnut',
+  data: {
+    labels: donutNames,
+    datasets: [{ data: donutStocks,
+      backgroundColor: ['#f59e0b','#f87171','#fcd34d','#fb923c','#a78bfa','#86efac'],
+      borderWidth: 0, hoverOffset: 6
+    }]
+  },
+  options: {
+    responsive: true,
+    cutout: '60%',
+    plugins: {
+      legend: { display: true, position: 'right',
+        labels: { color: '#9b9890', font: { size: 10 }, boxWidth: 10, padding: 8 }
+      }
+    }
+  }
+});
+</script>
+{% endblock %}

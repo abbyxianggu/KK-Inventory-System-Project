@@ -1,22 +1,119 @@
+{% extends 'base.html' %}
+{% block title %}Reports — KK Inventory{% endblock %}
 
-{%extends 'base.html'%}
-
-{% block title %} reports {% endblock %}
-
-{%block main%}
+{% block main %}
 <style>
-  #reports_tab{
-    color:rgb(255, 255, 255);
-    border-bottom: 2px solid white;
-  }
-  </style>
-<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-<title> Reports </title>
-<div class="big_box">
+#reports_tab {
+  font-weight: 300;
+  color: white;
+  border-bottom: 3px solid white;
+} 
+</style>
+<div class="page">
+
+  <div class="stats-row mb-20">
+    <div class="stat-card">
+      <div class="stat-card-label">Total revenue (7d)</div>
+      <div class="stat-card-value">${{ "{:,.0f}".format(total_revenue_7d) }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Units sold (7d)</div>
+      <div class="stat-card-value">{{ "{:,}".format(total_units_7d) }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Best seller</div>
+      <div class="stat-card-value" style="font-size:20px">{{ best_seller }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Avg quota hit</div>
+      <div class="stat-card-value {% if avg_quota < 80 %}amber{% endif %}">{{ "%.0f"|format(avg_quota) }}%</div>
+    </div>
+  </div>
+
+  <!-- Charts row -->
+  <div class="card-grid mb-12">
+
+    <div class="card">
+      <div class="card-title">Sales by variety (7d)</div>
+      <canvas id="varietyChart" height="180"></canvas>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Revenue vs quota (7d)</div>
+      {% for label, pct in quota_days %}
+        <div class="quota-row">
+          <span class="quota-row-label">{{ label }}</span>
+          <div class="bar-bg">
+            <div class="bar-fill {% if pct >= 100 %}ok{% elif pct >= 70 %}med{% else %}low{% endif %}"
+                 style="width:{{ [pct, 100]|min }}%"></div>
+          </div>
+          <span class="quota-row-pct">{{ "%.0f"|format(pct) }}%</span>
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+
+  <!-- Store comparison -->
+  <div class="card">
+    <div class="card-title">Store comparison — this week</div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Store</th>
+          <th class="text-right">Units sold</th>
+          <th class="text-right">Revenue</th>
+          <th class="text-right">Quota</th>
+          <th class="text-right">Alerts</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in all_stores %}
+        <tr {% if s.store == store %}class="store-row-highlight"{% endif %}>
+          <td>{{ s.store }}</td>
+          <td class="text-right">{{ "{:,}".format(s.units) }}</td>
+          <td class="text-right">${{ "{:,.0f}".format(s.revenue) }}</td>
+          <td class="text-right">{{ "%.0f"|format(s.quota_pct) }}%</td>
+          <td class="text-right">
+            <span class="badge {% if s.alerts > 0 %}badge-low{% else %}badge-ok{% endif %}">
+              {{ s.alerts }}
+            </span>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 
 </div>
 
-{%endblock%}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const varietyLabels = {{ variety_labels | tojson }};
+const varietyData   = {{ variety_data | tojson }};
+
+new Chart(document.getElementById('varietyChart'), {
+  type: 'doughnut',
+  data: {
+    labels: varietyLabels,
+    datasets: [{
+      data: varietyData,
+      backgroundColor: ['#f59e0b','#f87171','#fcd34d','#fb923c','#a78bfa','#86efac'],
+      borderWidth: 0,
+      hoverOffset: 6
+    }]
+  },
+  options: {
+    responsive: true,
+    cutout: '58%',
+    plugins: {
+      legend: {
+        display: true,
+        position: 'right',
+        labels: { color: '#9b9890', font: { size: 11 }, boxWidth: 12, padding: 10 }
+      }
+    }
+  }
+});
+</script>
+{% endblock %}

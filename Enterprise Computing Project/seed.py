@@ -46,7 +46,7 @@ with app.app_context():
     for day_offset in range(7):
         sale_date = today - timedelta(days=6 - day_offset)
         for donut in all_donuts:
-            for hour in range(8, 16):
+            for hour in range(7, 24):
                 qty = random.randint(2, 30)
                 db.session.add(Sale(
                     donut_id=donut.id, store=donut.store,
@@ -54,6 +54,7 @@ with app.app_context():
                     revenue=round(qty * donut.price, 2),
                     date=sale_date, hour=hour
                 ))
+                
 
     db.session.commit()
     print("Seeded successfully!")

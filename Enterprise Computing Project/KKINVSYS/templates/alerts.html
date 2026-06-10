@@ -1,23 +1,98 @@
+{% extends 'base.html' %}
+{% block title %}Alerts — KK Inventory{% endblock %}
 
-{%extends 'base.html'%}
-
-{% block title %} alerts {% endblock %}
-
-{%block main%}
+{% block main %}
 <style>
-  #alerts_tab{
-    color:rgb(255, 255, 255);
-    border-bottom: 2px solid white;
-  }
-  </style>
-<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-<title> Alerts </title>
-<div class="big_box">
+#alerts_tab {
+  font-weight: 300;
+  color: white;
+  border-bottom: 3px solid white;
+}
+</style>
+<div class="page">
+
+  <div class="card-grid mb-12">
+
+    <!-- Left col: alerts + pending -->
+    <div class="card-col">
+
+      <div class="card">
+        <div class="card-title">Active alerts</div>
+        {% for d in low %}
+          {% set pct = (d.stock / d.max_stock * 100)|int %}
+          <div class="alert-row">
+            <span class="alert-icon critical">⊘</span>
+            <span class="alert-text">{{ d.name }} — {{ d.stock }} units ({{ pct }}%)</span>
+            <span class="badge badge-low">Critical</span>
+          </div>
+        {% endfor %}
+        {% for d in medium %}
+          {% set pct = (d.stock / d.max_stock * 100)|int %}
+          <div class="alert-row">
+            <span class="alert-icon warning">△</span>
+            <span class="alert-text">{{ d.name }} — {{ d.stock }} units ({{ pct }}%)</span>
+            <span class="badge badge-med">Med</span>
+          </div>
+        {% endfor %}
+        {% if not low and not medium %}
+          <p style="color:var(--text-3);font-size:13px;padding:8px 0">No active alerts for {{ store }}.</p>
+        {% endif %}
+      </div>
+
+      <div class="card">
+        <div class="card-title">Pending restock requests</div>
+        {% for r in restock_requests %}
+          <div class="request-row">
+            <span class="request-name">{{ r.donut.name }} × {{ r.quantity_needed }}</span>
+            <span class="request-meta">{{ r.date_submitted }}</span>
+            <span class="badge badge-{{ r.urgency|lower }}">{{ r.urgency }}</span>
+          </div>
+        {% else %}
+          <p style="color:var(--text-3);font-size:13px;padding:8px 0">No pending requests.</p>
+        {% endfor %}
+      </div>
+
+    </div>
+
+    <!-- Right col: submit form -->
+    <div class="card">
+      <div class="card-title">Submit restock request</div>
+
+      <form method="POST" action="/alerts/submit?store={{ store }}">
+        <div class="form-group">
+          <label class="form-label">Donut / ingredient</label>
+          <select class="form-control" name="donut_id" required>
+            {% for d in all_donuts %}
+              <option value="{{ d.id }}" {% if prefill_id == d.id %}selected{% endif %}>
+                {{ d.name }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Quantity needed</label>
+          <input class="form-control" type="number" name="quantity_needed" min="1" value="100" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Urgency</label>
+          <select class="form-control" name="urgency" required>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High" selected>High</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea class="form-control" name="notes" placeholder="Add any context for the request..."></textarea>
+        </div>
+        <button type="submit" class="btn-primary">Submit request</button>
+      </form>
+    </div>
+
+  </div>
 
 </div>
-
-
-{%endblock%}
+{% endblock %}

@@ -1,22 +1,140 @@
+{% extends 'base.html' %}
+{% block title %}Sales — KK Inventory{% endblock %}
 
-{%extends 'base.html'%}
-
-{% block title %} sales {% endblock %}
-
-{%block main%}
+{% block main %}
 <style>
-  #sales_tab{
-    color:rgb(255, 255, 255);
-    border-bottom: 2px solid white;
+  #sales_tab {
+    font-weight: 300;
+    color: white;
+    border-bottom: 3px solid white;
   }
-  </style>
-<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-<title> Sales </title>
-<div class="big_box">
+</style>
+<div class="page">
+
+  <div class="stats-row two-col mb-20">
+    <div class="stat-card">
+      <div class="stat-card-label">Daily revenue</div>
+      <div style="display:flex;align-items:baseline;gap:10px">
+        <div class="stat-card-value">${{ "{:,.2f}".format(revenue_today) }}</div>
+        <span style="color:var(--text-2);font-size:13px">/ $5,000 target</span>
+      </div>
+      <div class="quota-wrap">
+        <div class="quota-bar-bg">
+          <div class="quota-bar-fill" style="width:{{ [quota_pct, 100]|min }}%"></div>
+        </div>
+        <div class="quota-label">{{ "%.1f"|format(quota_pct) }}% of daily quota</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Units sold</div>
+      <div class="stat-card-value">{{ "{:,}".format(sold_today) }}</div>
+      <div class="stat-card-sub">estimated from stock delta</div>
+    </div>
+  </div>
+
+  <!-- Charts row -->
+  <div class="card-grid mb-12">
+    <div class="card">
+      <div class="card-title">7-day sales trend</div>
+      <canvas id="trendChart" height="160"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">Hourly sales — today</div>
+      <canvas id="hourlyChart" height="160"></canvas>
+    </div>
+  </div>
+
+  <!-- Sales log -->
+  <div class="card">
+    <div class="card-title">Sales log — today</div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Donut</th>
+          <th class="text-right">Qty</th>
+          <th class="text-right">Revenue</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in sales %}
+        <tr>
+          <td style="color:var(--text-2)">{{ "%02d:00"|format(s.hour) }}</td>
+          <td>{{ s.donut.name }}</td>
+          <td class="text-right">{{ s.quantity }}</td>
+          <td class="text-right">${{ "%.2f"|format(s.revenue) }}</td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="4" style="color:var(--text-3);text-align:center;padding:24px">
+            No sales data for today
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 
 </div>
 
-{%endblock%}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const trendData   = {{ seven_days | tojson }};
+const trendLabels = {{ trend_labels | tojson }};
+const hourlyData  = {{ hourly_data | tojson }};
+const hourlyLabels= {{ hourly_labels | tojson }};
+
+const gridOpts = {
+  x: { grid: { display: false }, ticks: { color: '#5a5955', font: { size: 11 } } },
+  y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#5a5955', font: { size: 11 } } }
+};
+
+// 7-day line chart
+new Chart(document.getElementById('trendChart'), {
+  type: 'line',
+  data: {
+    labels: trendLabels,
+    datasets: [{
+      data: trendData,
+      borderColor: '#C8102E',
+      backgroundColor: 'rgba(200,16,46,0.08)',
+      borderWidth: 2,
+      pointBackgroundColor: '#C8102E',
+      pointRadius: 4,
+      tension: 0.35,
+      fill: true
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ' $' + ctx.raw.toLocaleString() } }
+    },
+    scales: {
+      ...gridOpts,
+      y: { ...gridOpts.y,
+        ticks: { ...gridOpts.y.ticks, callback: v => '$' + v.toLocaleString() }
+      }
+    }
+  }
+});
+
+// Hourly bar chart
+new Chart(document.getElementById('hourlyChart'), {
+  type: 'bar',
+  data: {
+    labels: hourlyLabels,
+    datasets: [{
+      data: hourlyData,
+      backgroundColor: hourlyData.map(v => v > 0 ? '#f59e0b' : 'rgba(255,255,255,0.04)'),
+      borderRadius: 3
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: { ...gridOpts }
+  }
+});
+</script>
+{% endblock %}

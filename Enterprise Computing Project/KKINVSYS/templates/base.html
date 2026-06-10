@@ -10,20 +10,42 @@
     <div class="nav-top">
       <div class="nav-brand">KRISPY KREME - INVENTORY DASHBOARD</div>
       <div class="nav-top-right">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-container">
+            {% for category, message in messages %}
+              <div class="flash flash--{{ category }}" role="alert">
+                <div class="flash__icon">
+                  {% if category == 'error' %}
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  {% else %}
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  {% endif %}
+                </div>
+                <span class="flash__message">{{ message }}</span>
+                <button class="flash__close" onclick="this.closest('.flash').remove()" aria-label="Dismiss">✕</button>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+      
         <select class="store-select" onchange="window.location.href='?store=' + this.value">
           <option value="Sydney CBD" {{ 'selected' if store == 'Sydney CBD' }}>Sydney CBD</option>
           <option value="Parramatta" {{ 'selected' if store == 'Parramatta' }}>Parramatta</option>
           <option value="Chatswood" {{ 'selected' if store == 'Chatswood' }}>Chatswood</option>
         </select>
-        <a href="/alerts" class="restock-btn">Restock request ↗</a>
+        <a href="/alerts?store={{ store }}" class="restock-btn">Restock request ↗</a>
       </div>
     </div>
     <div class="nav-tabs">
-      <a href="/" class="nav-tab" id="overview_tab">Overview</a>
-      <a href="/inventory" class="nav-tab" id="inv_tab">Inventory</a>
-      <a href="/sales" class="nav-tab" id="sales_tab">Sales</a>
-      <a href="/alerts" class="nav-tab" id="alerts_tab">Alerts</a>
-      <a href="/reports" class="nav-tab" id="reports_tab">Reports</a>
+      <a href="/?store={{ store }}" class="nav-tab" id="overview_tab">Overview</a>
+      <a href="/inventory?store={{ store }}" class="nav-tab" id="inventory_tab">Inventory</a>
+      <a href="/sales?store={{ store }}" class="nav-tab" id="sales_tab">Sales</a>
+      <a href="/reports?store={{ store }}" class="nav-tab" id="reports_tab">Reports</a>
+      <a href="/alerts?store={{ store }}" class="nav-tab" id="alerts_tab">Alerts</a>
+
     </div>
   </nav>
 
