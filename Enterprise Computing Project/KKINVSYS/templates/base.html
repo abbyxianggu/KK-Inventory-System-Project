@@ -9,6 +9,7 @@
   <nav class="navbar">
     <div class="nav-top">
       <div class="nav-brand">KRISPY KREME - INVENTORY DASHBOARD</div>
+      <img src="{{ url_for('static', filename='images/KKlogo.png') }}" alt="Krispy Kreme" class="nav-logo">
       <div class="nav-top-right">
 
         {% with messages = get_flashed_messages(with_categories=true) %}

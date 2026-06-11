@@ -1,5 +1,5 @@
 from KKINVSYS import create_app, db
-from KKINVSYS.database import Donut, Sale, Ingredient
+from KKINVSYS.database import Donut, Sale
 from datetime import date, timedelta
 import random
 
