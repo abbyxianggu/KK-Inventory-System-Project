@@ -35,7 +35,7 @@
 
     <div class="card">
       <div class="card-title">Sales by variety (7d)</div>
-      <canvas id="varietyChart" height="180"></canvas>
+      <canvas id="varietyChart" style="height: 160px; max-height: 160px"></canvas>
     </div>
 
     <div class="card">
@@ -71,7 +71,7 @@
         {% for s in all_stores %}
         <tr {% if s.store == store %}class="store-row-highlight"{% endif %}>
           <td>{{ s.store }}</td>
-          <td class="text-right">{{ "{:,}".format(s.units) }}</td>
+          <td class="text-right">${{ "{:,}".format(s.units) }}</td>
           <td class="text-right">${{ "{:,.0f}".format(s.revenue) }}</td>
           <td class="text-right">{{ "%.0f"|format(s.quota_pct) }}%</td>
           <td class="text-right">
@@ -91,6 +91,7 @@
 <script>
 const varietyLabels = {{ variety_labels | tojson }};
 const varietyData   = {{ variety_data | tojson }};
+
 
 new Chart(document.getElementById('varietyChart'), {
   type: 'doughnut',

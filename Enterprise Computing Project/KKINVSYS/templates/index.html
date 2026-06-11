@@ -86,14 +86,14 @@
         {% set pct = (d.stock / d.max_stock * 100)|int %}
         {% if pct < 10 %}
           <div class="alert-row">
-            <span class="alert-icon critical">⊘</span>
+            <span class="alert-icon critical"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban-icon lucide-ban"><circle cx="12" cy="12" r="10"/><path d="M4.929 4.929 19.07 19.071"/></svg></span>
             <span class="alert-text">{{ d.name }} — critically low ({{ d.stock }} units)</span>
             <span class="badge badge-low">Critical</span>
             <a href="/alerts?store={{ store }}&prefill={{ d.id }}" class="btn-sm">Restock</a>
           </div>
         {% elif pct < 50 %}
           <div class="alert-row">
-            <span class="alert-icon warning">△</span>
+            <span class="alert-icon warning"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-triangle-alert-icon lucide-triangle-alert"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span>
             <span class="alert-text">{{ d.name }} — medium warning ({{ d.stock }} units)</span>
             <span class="badge badge-med">Med</span>
             <a href="/alerts?store={{ store }}&prefill={{ d.id }}" class="btn-sm">Restock</a>

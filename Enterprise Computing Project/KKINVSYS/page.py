@@ -103,7 +103,6 @@ def sales():
 @page.route('/alerts')
 def alerts():
     store = request.args.get('store', 'Sydney CBD')
-    prefill_id = request.args.get('prefill', type=int)
     donuts = Donut.query.filter_by(store=store).all()
     low    = [d for d in donuts if d.stock / d.max_stock < 0.10]
     medium = [d for d in donuts if 0.10 <= d.stock / d.max_stock < 0.50]
@@ -116,7 +115,6 @@ def alerts():
         low=low, medium=medium,
         restock_requests=restock_requests,
         all_donuts=all_donuts,
-        prefill_id=prefill_id
     )
 
 @page.route('/alerts/submit', methods=['POST'])
@@ -136,8 +134,7 @@ def submit_restock():
             raise ValueError("Invalid donut selection")
 
         pct = donut.stock / donut.max_stock
-        
-
+    
         if pct >= 1.0:
             flash(f"{donut.name} is already at full capacity ({donut.stock}/{donut.max_stock}). No restock needed.", category="error")
             return redirect(url_for('page.alerts', store=store))
@@ -146,9 +143,10 @@ def submit_restock():
             flash(f"{donut.name} is at {int(pct*100)}% capacity — not low enough to require restocking.", category= "error")
             return redirect(url_for('page.alerts', store=store))
         
-        if quantity_needed >= max.stock:
-            flash(f"Requested quantity exceeds max stock for {donut.name}, which is {donut.max_stock}. Please adjust the quantity.", category="error")
-
+        if quantity_needed > donut.max_stock:
+            flash(f"Requested quantity exceeds max capacity. Only {donut.max_stock - donut.stock} can be restocked.", category="error")
+            return redirect(url_for('page.alerts', store=store))
+        
         req = RestockRequest(
             donut_id=donut_id, store=store,
             quantity_needed=quantity_needed,

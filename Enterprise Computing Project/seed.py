@@ -28,16 +28,6 @@ with app.app_context():
                 stock=stock, max_stock=d["max_stock"], price=d["price"]
             ))
 
-        for ingredient, max_q, unit in [
-            ("Flour", 50, "kg"), ("Sugar", 20, "kg"),
-            ("Glaze Mix", 20, "L"), ("Frying Oil", 40, "L")
-        ]:
-            db.session.add(Ingredient(
-                name=ingredient, store=store,
-                quantity=round(random.uniform(5, max_q), 1),
-                max_quantity=max_q, unit=unit
-            ))
-
     db.session.commit()
 
     all_donuts = Donut.query.all()

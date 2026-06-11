@@ -35,4 +35,4 @@ class RestockRequest(db.Model):
     notes = db.Column(db.String(500))
     date_submitted = db.Column(db.Date, nullable=False)
     status = db.Column(db.String(20), default='Pending')
-    donut = db.relationship('Donut', backref='restock_requests')  # ← add this
+    donut = db.relationship('Donut', backref='restock_requests') 
